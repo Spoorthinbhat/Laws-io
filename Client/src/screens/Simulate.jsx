@@ -164,7 +164,7 @@
 // };
 
 // export default Simulator;
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import BgCourt from "../assets/BackgroundCourt.jpeg";
 import LadyLawyer from "../assets/LadyLawyer.png";
 import MaleLawyer from "../assets/MaleLawyer.png";
@@ -368,32 +368,32 @@ const Simulator = () => {
 
   const context = "This case involves Self-Defense under Section 96 to 106 of the Indian Penal Code, 1860. The following dialogues represent interactions in a simulated court setting.";
 
-  async function simulateCourt() {
-    try {
-      const response = await fetch(`http://localhost:3000/ai/simulateCourt?law=${encodeURIComponent('Self-Defense (Section 96 to 106 of the Indian Penal Code, 1860)')}`);
+//   async function simulateCourt() {
+//     try {
+//       const response = await fetch(`http://localhost:3000/ai/simulateCourt?law=${encodeURIComponent('Self-Defense (Section 96 to 106 of the Indian Penal Code, 1860)')}`);
       
-      if (!response.ok) {
-        throw new Error(`Failed to fetch court simulation: ${response.statusText}`);
-      }
+//       if (!response.ok) {
+//         throw new Error(`Failed to fetch court simulation: ${response.statusText}`);
+//       }
   
-      // Log the raw response text to check the exact response from the API
-      const responseText = await response.text();
-      console.log("Raw Response Text:", responseText);
+//       // Log the raw response text to check the exact response from the API
+//       const responseText = await response.text();
+//       console.log("Raw Response Text:", responseText);
   
-      try {
-        // Try parsing the JSON after logging it
-        const data = JSON.parse(responseText);
-        setConversation(data);  // Set conversation data here
-      } catch (jsonError) {
-        console.error("Error parsing JSON:", jsonError.message);
-        console.error("Invalid JSON response:", responseText);
-      }
+//       try {
+//         // Try parsing the JSON after logging it
+//         const data = JSON.parse(responseText);
+//         setConversation(data);  // Set conversation data here
+//       } catch (jsonError) {
+//         console.error("Error parsing JSON:", jsonError.message);
+//         console.error("Invalid JSON response:", responseText);
+//       }
   
-    } catch (error) {
-      // This handles any other errors, such as fetch failures
-      console.error("Error:", error.message);
-    }
-  }
+//     } catch (error) {
+//       // This handles any other errors, such as fetch failures
+//       console.error("Error:", error.message);
+//     }
+//   }
   
 
   const characters = {
@@ -404,27 +404,29 @@ const Simulator = () => {
     "woman": woman
   };
 
-  useEffect(() => {
-    // Fetch data only on initial page load (component mount)
-    simulateCourt();
-  }, []);
+//   useEffect(() => {
+//     // Fetch data only on initial page load (component mount)
+//     simulateCourt();
+//   }, []);
   
 
-  const handleNext = () => {
+const handleNext = () => {
     if (currentStep < conversation.length - 1) {
       setSelectedOption(null);
       setReason("");
-      setOptionsVisible(coversation[currentStep + 1].options !== undefined);
+      setOptionsVisible(conversation[currentStep + 1].options !== undefined);
       setCurrentStep(currentStep + 1);
+      setPageNumber(pageNumber + 1); // Update the page number
     }
   };
-
+  
   const handlePrev = () => {
     if (currentStep > 0) {
       setSelectedOption(null);
       setReason("");
       setOptionsVisible(conversation[currentStep - 1].options !== undefined);
       setCurrentStep(currentStep - 1);
+      setPageNumber(pageNumber - 1); // Update the page number
     }
   };
 
