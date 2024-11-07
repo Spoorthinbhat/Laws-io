@@ -1,13 +1,13 @@
-import { Link } from "react-router-dom";
-import ManOld from "../assets/ManOld.png";
-import ManYoung from "../assets/ManYoung.png";
+import { Link } from 'react-router-dom';
+import ManOld from '../assets/ManOld.png';
+import ManYoung from '../assets/ManYoung.png';
+import Woman from '../assets/woman.png';
 
-import { useEffect, useState } from "react";
-import Loading from "../components/Loading";
-
+import { useEffect, useState } from 'react';
+import Loading from '../components/Loading';
 
 const CaseStudy = ({ csData, gotCase }) => {
-  const [back, setBack] = useState(true)
+  const [back, setBack] = useState(true);
   const [convIdx, setConvIdx] = useState(0);
   const [storyend, setStoryEnd] = useState(false);
 
@@ -15,9 +15,9 @@ const CaseStudy = ({ csData, gotCase }) => {
   let age = csData[1];
   let gender = csData[2];
   let backstory = csData[3];
-  let conversations = csData ? csData[4] : ["Wait"];
+  let conversations = csData ? csData[4] : ['Wait'];
   let microMCQs = csData[5];
-  console.log(conversations);
+  console.log(csData);
   useEffect(() => {
     if (gotCase && convIdx == conversations.length) {
       setStoryEnd(true);
@@ -30,9 +30,7 @@ const CaseStudy = ({ csData, gotCase }) => {
         className="absolute z-10 items-center flex flex-col transition-all duration-150 w-[80%] h-[60%] p-[50px] pb-[100px] bg-[#003366] top-[20%] left-[10%] rounded-[50px] shadow-xl shadow-black "
         style={{ transform: back ? 'scale(1)' : 'scale(0)' }}
       >
-        <div className="flex text-3xl font-bold">
-          BackStory
-        </div>
+        <div className="flex text-3xl font-bold">BackStory</div>
         <div className="flex justify-center mt-10 text-xl font-medium over overflow-y-scroll">
           {gotCase ? backstory : <Loading />}
         </div>
@@ -43,9 +41,13 @@ const CaseStudy = ({ csData, gotCase }) => {
           Close
         </div>
       </div>
-      <div className={`flex mb-10 ${back || storyend ? 'blur-md' : ''} h-full w-full z-0 justify-center`}>
+      <div
+        className={`flex mb-10 ${
+          back || storyend ? 'blur-md' : ''
+        } h-full w-full z-0 justify-center`}
+      >
         <div className="relative flex flex-col justify-end w-[300px] scale-x-[-1]">
-          <img src={ManOld} alt="" className="" />
+          <img src={gender == 'male' ? ManOld : Woman} alt="" className="" />
         </div>
         <div className="h-full w-[50%] bottom-1 items-center flex pr-[100px] ">
           <div className="bg-white text-black py-5 px-10 rounded-3xl rounded-bl-none">
@@ -54,7 +56,10 @@ const CaseStudy = ({ csData, gotCase }) => {
             </div>
           </div>
         </div>
-        <div onClick={() => setConvIdx(convIdx + 1)} className="absolute w-[100px] sm:w-[150px] h-[50px] bg-yellow-400 bottom-5 right-5 cursor-pointer justify-center font-semibold text-xl text-black flex items-center rounded-tl-3xl rounded-br-3xl">
+        <div
+          onClick={() => setConvIdx(convIdx + 1)}
+          className="absolute w-[100px] sm:w-[150px] h-[50px] bg-yellow-400 bottom-5 right-5 cursor-pointer justify-center font-semibold text-xl text-black flex items-center rounded-tl-3xl rounded-br-3xl"
+        >
           Next
         </div>
       </div>
@@ -78,7 +83,7 @@ const CaseStudy = ({ csData, gotCase }) => {
           Simulate
         </Link>
       </div>
-    </div >
+    </div>
   );
 };
 
