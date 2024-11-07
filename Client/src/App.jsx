@@ -23,7 +23,7 @@ function App() {
   const [detailedLoading, setDetailedLoading] = useState(true);
   const [gotCase, setGotCase] = useState(false);
 
-  const url = 'http://localhost:3000/ai';
+  const url = 'https://laws-api.poseidon0z.com/ai';
 
   // Fetch MCQs from the API
   const getMCQs = async (law) => {
@@ -161,7 +161,10 @@ function App() {
                 <MCQPage mcqData={mcqData} setPageNumber={setPageNumber} />
               }
             />
-            <Route path="/Case" element={<CaseStudy csData={caseStudyData} gotCase={gotCase} />} />
+            <Route
+              path="/Case"
+              element={<CaseStudy csData={caseStudyData} gotCase={gotCase} />}
+            />
             <Route path="/Simulate" element={<Simulate />} />
             <Route path="/Leaderboard" element={<Leaderboard />} />
           </Routes>
