@@ -169,10 +169,11 @@ import BgCourt from "../assets/BackgroundCourt.jpeg";
 import LadyLawyer from "../assets/LadyLawyer.png";
 import MaleLawyer from "../assets/MaleLawyer.png";
 import old_man from "../assets/ManOld.png";
-import UncleMan from "../assets/UncleMan.png";
+import UncleMan from "../assets/ManYoung.png";
 import woman from "../assets/woman.png";
 
 const Simulator = () => {
+    const [pageNumber, setPageNumber] = useState(1); 
 //   const [conversation, setConversation] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -400,7 +401,7 @@ const Simulator = () => {
     "opposing_lawyer": LadyLawyer,
     "friendly_lawyer": MaleLawyer,
     "old_man": old_man,
-    "Person": UncleMan,
+    "person": UncleMan,
     "woman": woman
   };
 
