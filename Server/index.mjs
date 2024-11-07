@@ -9,6 +9,7 @@ import {
   getMCQs,
   getCaseStudy,
   setCourtRoom,
+  simulateCourt,
 } from './GeminiUtils.js';
 
 const app = express();
@@ -110,8 +111,10 @@ app.post('/ai/setCourt', async (req, res) => {
   res.redirect('/ai/simulateCourt');
 });
 
-app.get('/ai/simulateCourt', (req, res) => {
-  let chat = req.session.chat;
+app.get('/ai/simulateCourt', async (req, res) => {
+  let law = req.query.law;
+  const answer = await simulateCourt(law);
+  res.send(answer);
 });
 
 // //Get the narration of the casestudy

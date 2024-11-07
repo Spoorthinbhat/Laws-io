@@ -1,15 +1,15 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-const { response } = require("express");
-const { stringify } = require("querystring");
-require("dotenv").config();
-const readline = require('readline')
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { response } = require('express');
+const { stringify } = require('querystring');
+require('dotenv').config();
+const readline = require('readline');
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
 // Function to simplify the law
 const simplifyLaw = async (law) => {
-    const prompt = `You are an expert in law with a talent for explaining complex legal concepts in simple terms. Your task is to explain the ${law} to the average citizen. Your explanation should: 
+  const prompt = `You are an expert in law with a talent for explaining complex legal concepts in simple terms. Your task is to explain the ${law} to the average citizen. Your explanation should: 
     - State the law's main purpose in 1 sentence.
     - Outline 2-3 key points using everyday language.
     - Provide 1 brief real-world example of the law's impact.
@@ -18,19 +18,19 @@ const simplifyLaw = async (law) => {
     - Dont give any special characters just alphanumerics
     As a legal expert, make the law's essentials clear and accessible to someone without legal training.`;
 
-    try {
-        const result = await model.generateContent(prompt);
-        console.log("Brief Law Sent");
-        return result.response; // Directly return response if it's a structured object
-    } catch (e) {
-        console.error("Gemini API Error in Simplification:", e);
-        throw new Error("Failed to simplify the law.");
-    }
+  try {
+    const result = await model.generateContent(prompt);
+    console.log('Brief Law Sent');
+    return result.response; // Directly return response if it's a structured object
+  } catch (e) {
+    console.error('Gemini API Error in Simplification:', e);
+    throw new Error('Failed to simplify the law.');
+  }
 };
 
 // Function to expand on the law
 const expandLaw = async (law) => {
-    const prompt = `You are a knowledgeable law professor with a gift for making complex legal concepts understandable to non-experts. Your student has asked for a more detailed explanation of the ${law}. Provide an in-depth yet accessible explanation that: 
+  const prompt = `You are a knowledgeable law professor with a gift for making complex legal concepts understandable to non-experts. Your student has asked for a more detailed explanation of the ${law}. Provide an in-depth yet accessible explanation that: 
     - Describes the law's historical context and why it was created.
     - Explains the law's main objectives in greater detail.
     - Outlines 4-5 key provisions or aspects of the law.
@@ -51,19 +51,19 @@ const expandLaw = async (law) => {
     No need to add any extra characters before or after the json data. 
     `;
 
-    try {
-        const result = await model.generateContent(prompt);
-        console.log("In-depth Law Sent");
-        return result.response; // Returning response object
-    } catch (e) {
-        console.error("Gemini API Error in Expansion:", e);
-        throw new Error("Failed to expand on the law.");
-    }
+  try {
+    const result = await model.generateContent(prompt);
+    console.log('In-depth Law Sent');
+    return result.response; // Returning response object
+  } catch (e) {
+    console.error('Gemini API Error in Expansion:', e);
+    throw new Error('Failed to expand on the law.');
+  }
 };
 
 // Function to generate MCQs
 const getMCQs = async (law) => {
-    const prompt = `You are an AI legal assistant designed to create multiple-choice questions (MCQs) that test the understanding of legal concepts by common citizens. 
+  const prompt = `You are an AI legal assistant designed to create multiple-choice questions (MCQs) that test the understanding of legal concepts by common citizens. 
     The citizens have just learned about a specific law in a simplified manner. Based on the law provided, generate questions that assess their basic understanding and ability to apply the law in everyday situations.
     The specific law is: ${law}.
     Generate 10 MCQs, each with four options and one correct answer. I need the response in the  Array of Javascript Objects format with the below structure:
@@ -77,18 +77,18 @@ const getMCQs = async (law) => {
         },{}... And so on
     } Make the Right option random for each question , Don't make it the same option for all the questions, I don't need any extra Characters to be before and after your response`;
 
-    try {
-        const result = await model.generateContent(prompt);
-        console.log("MCQs Sent");
-        return result.response; // Returning response
-    } catch (e) {
-        console.error("Gemini API Error in MCQ Generation:", e);
-        throw new Error("Failed to generate MCQs.");
-    }
+  try {
+    const result = await model.generateContent(prompt);
+    console.log('MCQs Sent');
+    return result.response; // Returning response
+  } catch (e) {
+    console.error('Gemini API Error in MCQ Generation:', e);
+    throw new Error('Failed to generate MCQs.');
+  }
 };
 
-const getCaseStudy = async (law) =>{
-    const prompt = `Act as a legal expert and create a case study based on the following law: ${law}.
+const getCaseStudy = async (law) => {
+  const prompt = `Act as a legal expert and create a case study based on the following law: ${law}.
    Your role is to narrate the victim’s experience in detail. Describe:
     - What happened to the victim.
     - How the victim was affected by the situation.
@@ -111,54 +111,99 @@ const getCaseStudy = async (law) =>{
         },{ question2 } and so on...] (I need a micro mcq question for every three conversations)
     }
         I don't need any extra message before or after this json response . I need at maximum of 10 conversations.
-    `
-    try {
-        const result = await model.generateContent(prompt);
-        console.log("CaseStudy Sent");
-        return result.response; // Returning response
-    } catch (e) {
-        console.error("Gemini API Error in CaseStudy Generation:", e);
-        throw new Error("Failed to generate CaseStudy.");
-    }
-}
+    `;
+  try {
+    const result = await model.generateContent(prompt);
+    console.log('CaseStudy Sent');
+    return result.response; // Returning response
+  } catch (e) {
+    console.error('Gemini API Error in CaseStudy Generation:', e);
+    throw new Error('Failed to generate CaseStudy.');
+  }
+};
 
-const setCourtRoom = async (law,context,role) => {
-    let prompt = `I will say you a context of a casestudy related to the law : ${law}. Context : ${context}.`;
-    
-    if (role === "for") {
-        prompt += " You are a lawyer fighting for the victim. Your role is to prove the victims innocence and argue against the lawyer of the accused";
-    } else {
-        prompt += " You are a lawyer fighting for the accused. Your role is to prove the victim guilty and argue against the victims lawyer";
-    }
+const setCourtRoom = async (law, context, role) => {
+  let prompt = `I will say you a context of a casestudy related to the law : ${law}. Context : ${context}.`;
 
-    prompt += " Your responses must be strictly less than 100 words. your responses must be like a conversation";
+  if (role === 'for') {
+    prompt +=
+      ' You are a lawyer fighting for the victim. Your role is to prove the victims innocence and argue against the lawyer of the accused';
+  } else {
+    prompt +=
+      ' You are a lawyer fighting for the accused. Your role is to prove the victim guilty and argue against the victims lawyer';
+  }
 
+  prompt +=
+    ' Your responses must be strictly less than 100 words. your responses must be like a conversation';
 
-    const chat = model.startChat({
-        history: [
-            {
-            role: "user",
-            parts: [{ text:  prompt}],
-            },
-            {
-            role: "model",
-            parts: [{ text: "Alrighty"}],
-            },
-        ],
-    });
-    
-    // let response = await chat.sendMessage("The victim is not innocent");
-    // console.log(response.response.candidates[0].content.parts[0].text);
+  const chat = model.startChat({
+    history: [
+      {
+        role: 'user',
+        parts: [{ text: prompt }],
+      },
+      {
+        role: 'model',
+        parts: [{ text: 'Alrighty' }],
+      },
+    ],
+  });
 
+  // let response = await chat.sendMessage("The victim is not innocent");
+  // console.log(response.response.candidates[0].content.parts[0].text);
 
-    return chat;
-    
-}
+  return chat;
+};
 
-let law = 'Law: Self-Defense (Section 96 to 106 of the Indian Penal Code, 1860)';
-let context = "Alice Johnson, a 29-year-old graphic designer, was involved in a car accident caused by a faulty brake system in her vehicle. Despite reporting the issue to the dealership, the problem was not addressed. The faulty brakes led to a collision that caused Alice significant injuries and damages to her vehicle. Alice Johnson: 'I was driving home from work when the brakes failed. I tried to stop, but the car just kept moving and crashed into another vehicle.Alice Johnson: 'I reported the brake issue to the dealership before the accident, but they said it was fine and didn’t fix it.Alice Johnson: 'After the accident, I was taken to the hospital with several injuries. I had to undergo surgery and extensive physical therapy.Alice Johnson: 'I contacted the dealership again, but they refused to accept responsibility for the faulty brakes.Alice Johnson: 'I’m struggling with medical bills and car repairs, and I’m worried about how I will manage financially.Alice Johnson: 'I decided to file a complaint with a consumer protection agency, hoping they would investigate the dealership’s practices.Alice Johnson: 'The consumer protection agency confirmed that the dealership had a history of complaints about brake issues.Alice Johnson: 'I’m currently preparing to file a lawsuit against the dealership for negligence and seeking compensation for my damages.Alice Johnson: 'I feel frustrated and betrayed by the dealership. I trusted them to ensure my vehicle was safe.Alice Johnson: 'I hope to get justice and prevent others from going through a similar situation. I want the dealership to be held accountable.'"
-let rol = "for";
+const simulateCourt = async (law) => {
+  const prompt = `
+      You are simulating a court case based on the following law:
+      "${law}"
+  
+      Find a real-life landmark court case in India related to this law, and generate a court case simulation based on that case. The simulation should include at least 20 dialogues, with a minimum of 4 dialogues for the 'friendly_lawyer' role.
+  
+      The format should be a JSON object with the following fields:
+      - "context": A brief description of the case inspired by the real-life case.
+      - "dialogues": An array of dialogue entries with roles such as 'opposing_lawyer', 'friendly_lawyer', 'person', 'woman', 'old_man', etc.
+  
+      Each 'friendly_lawyer' entry should include 4 options, with only 1 correct answer, and a 'reason' field explaining why the answer is correct or wrong.
+  
+      Example format for each dialogue:
+      {
+        "role": "opposing_lawyer",
+        "statement": "Opening statement challenging the law."
+      }
+      {
+        "role": "friendly_lawyer",
+        "statement": "Opening statement defending the law.",
+        "options": [
+          { "option": "Option 1", "correct": true, "reason": "Explanation for the correct option." },
+          { "option": "Option 2", "correct": false, "reason": "Explanation for the wrong option." },
+          { "option": "Option 3", "correct": false, "reason": "Explanation for the wrong option." },
+          { "option": "Option 4", "correct": false, "reason": "Explanation for the wrong option." }
+        ]
+      }
+  
+      Ensure that the dialogue is realistic, logical, and based on the real-life case related to the law. 
+      IMPORTANT: Return the raw JSON without any codeblock formatting, explanation, or additional text. Do not wrap the response in backticks or any other formatting. The response should start with { and end with } and be valid JSON.
+    `;
 
-module.exports = { simplifyLaw, expandLaw , getMCQs , getCaseStudy , setCourtRoom };
+  const result = await model.generateContent(prompt);
 
+  return result.response.text();
+};
 
+let law =
+  'Law: Self-Defense (Section 96 to 106 of the Indian Penal Code, 1860)';
+let context =
+  "Alice Johnson, a 29-year-old graphic designer, was involved in a car accident caused by a faulty brake system in her vehicle. Despite reporting the issue to the dealership, the problem was not addressed. The faulty brakes led to a collision that caused Alice significant injuries and damages to her vehicle. Alice Johnson: 'I was driving home from work when the brakes failed. I tried to stop, but the car just kept moving and crashed into another vehicle.Alice Johnson: 'I reported the brake issue to the dealership before the accident, but they said it was fine and didn’t fix it.Alice Johnson: 'After the accident, I was taken to the hospital with several injuries. I had to undergo surgery and extensive physical therapy.Alice Johnson: 'I contacted the dealership again, but they refused to accept responsibility for the faulty brakes.Alice Johnson: 'I’m struggling with medical bills and car repairs, and I’m worried about how I will manage financially.Alice Johnson: 'I decided to file a complaint with a consumer protection agency, hoping they would investigate the dealership’s practices.Alice Johnson: 'The consumer protection agency confirmed that the dealership had a history of complaints about brake issues.Alice Johnson: 'I’m currently preparing to file a lawsuit against the dealership for negligence and seeking compensation for my damages.Alice Johnson: 'I feel frustrated and betrayed by the dealership. I trusted them to ensure my vehicle was safe.Alice Johnson: 'I hope to get justice and prevent others from going through a similar situation. I want the dealership to be held accountable.'";
+let rol = 'for';
+
+module.exports = {
+  simplifyLaw,
+  expandLaw,
+  getMCQs,
+  getCaseStudy,
+  setCourtRoom,
+  simulateCourt,
+};
