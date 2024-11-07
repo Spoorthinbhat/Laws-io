@@ -179,7 +179,7 @@ const Simulator = () => {
   const [optionsVisible, setOptionsVisible] = useState(false);
   const [reason, setReason] = useState("");
   const [contextVisible, setContextVisible] = useState(true); // State for showing context first
- const coversation= {
+ const json= {
     "context": "This case, inspired by the landmark case of State of Maharashtra vs. Madhukar N. Nagle, revolves around a man named Rohan who claimed self-defense after fatally stabbing a neighbor during an altercation. Rohan alleges that his neighbor, Raj, was physically assaulting him, forcing him to use the knife in self-preservation. The prosecution argues that Rohan's actions were not justified and that he deliberately killed Raj in a fit of rage.",
     "dialogues": [
       {
@@ -364,6 +364,7 @@ const Simulator = () => {
       }
     ]
     }
+    const conversation= json.dialogues;
 
   const context = "This case involves Self-Defense under Section 96 to 106 of the Indian Penal Code, 1860. The following dialogues represent interactions in a simulated court setting.";
 
@@ -413,7 +414,7 @@ const Simulator = () => {
     if (currentStep < conversation.length - 1) {
       setSelectedOption(null);
       setReason("");
-      setOptionsVisible(conversation[currentStep + 1].options !== undefined);
+      setOptionsVisible(coversation[currentStep + 1].options !== undefined);
       setCurrentStep(currentStep + 1);
     }
   };
@@ -457,7 +458,7 @@ const Simulator = () => {
         // Context Section
         <div className="w-3/4 bg-gray-800 text-white p-6 rounded-lg shadow-md">
           <h2 className="text-2xl font-bold mb-4">Context</h2>
-          <p className="text-lg">{coversation.context}</p>
+          <p className="text-lg">{json.context}</p>
           <button
             onClick={startSimulation}
             className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
