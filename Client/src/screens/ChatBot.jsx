@@ -18,7 +18,7 @@ const ChatInterface = () => {
   const sendMessageToBackend = async (message) => {
     try {
         console.log(message);
-      const response = await fetch('http://laws-api.poseidon0z.com/api/chat', {
+      const response = await fetch('http://localhost:3000/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
