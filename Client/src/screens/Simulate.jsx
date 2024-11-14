@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import BgCourt from '../assets/BackgroundCourt.jpeg';
 import LadyLawyer from '../assets/LadyLawyer.png';
 import MaleLawyer from '../assets/MaleLawyer.png';
@@ -6,15 +6,15 @@ import old_man from '../assets/ManOld.png';
 import UncleMan from '../assets/ManYoung.png';
 import woman from '../assets/woman.png';
 
-const Simulator = () => {
+const Simulator = (data, conversation) => {
   const [pageNumber, setPageNumber] = useState(1);
-  const [data, setdata] = useState([]);
-  const [conversation, setConversation] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [optionsVisible, setOptionsVisible] = useState(false);
   const [reason, setReason] = useState('');
   const [contextVisible, setContextVisible] = useState(true); // State for showing context first
+  console.log("con" + JSON.stringify(conversation));
+  console.log('data' + JSON.stringify(data));
   //  const json= {
   //     "context": "This case, inspired by the landmark case of State of Maharashtra vs. Madhukar N. Nagle, revolves around a man named Rohan who claimed self-defense after fatally stabbing a neighbor during an altercation. Rohan alleges that his neighbor, Raj, was physically assaulting him, forcing him to use the knife in self-preservation. The prosecution argues that Rohan's actions were not justified and that he deliberately killed Raj in a fit of rage.",
   //     "dialogues": [
@@ -204,32 +204,7 @@ const Simulator = () => {
 
   //   const context = "This case involves Self-Defense under Section 96 to 106 of the Indian Penal Code, 1860. The following dialogues represent interactions in a simulated court setting.";
 
-  async function simulateCourt() {
-    try {
-      const response = await fetch(
-        `https://laws-api.poseidon0z.com/ai/simulateCourt?law=${encodeURIComponent(
-          'Self-Defense (Section 96 to 106 of the Indian Penal Code, 1860)'
-        )}`
-      );
 
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch court simulation: ${response.statusText}`
-        );
-      }
-
-      // Log the raw response text to check the exact response from the API
-      const responseText = await response.json();
-      console.log('Raw Response Text:', responseText);
-
-      setdata(responseText);
-      setConversation(responseText.dialogues);
-      // Set conversation data here
-    } catch (error) {
-      // This handles any other errors, such as fetch failures
-      console.error('Error:', error.message);
-    }
-  }
 
   const characters = {
     opposing_lawyer: LadyLawyer,
@@ -239,10 +214,6 @@ const Simulator = () => {
     woman: woman,
   };
 
-  useEffect(() => {
-    // Fetch data only on initial page load (component mount)
-    simulateCourt();
-  }, []);
 
   const handleNext = () => {
     if (currentStep < conversation.length - 1) {

@@ -1,9 +1,12 @@
 {
   "dependencies": {
+    "@aws-sdk/client-lex-runtime-service": "^3.687.0",
+    "@aws-sdk/client-lex-runtime-v2": "^3.687.0",
     "@google/generative-ai": "^0.17.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "express-session": "^1.18.0"
+    "express-session": "^1.18.0",
+    "uuid": "^11.0.3"
   }
 }
