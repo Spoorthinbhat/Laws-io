@@ -209,11 +209,11 @@
 
 // export default App;
 import React from 'react';
-
-import ChatBot from "./screens/ChatBot.jsx";
+import Bot from "./screens/Bot.jsx";
 function App() {
   return (
-  <ChatBot></ChatBot>
+  // <ChatBot></ChatBot>
+  <Bot></Bot>
   );
 }
 
